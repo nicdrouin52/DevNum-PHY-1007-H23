@@ -48,6 +48,15 @@ class LaplaceEquationSolver:
             the electrical components and in the empty space between the electrical components, while the field V
             always gives V(x, y) = 0 if (x, y) is not a point belonging to an electrical component of the circuit.
         """
+        # on a déja la matrice des sources de potentiel
+        V = constant_voltage
+        # fonction pour calculer le potentiel
+        # itérations sur la grille
+        V_copie = V.copy()
+        for i in range(constant_voltage.shape[0]):
+            for j in range(constant_voltage.shape[1]):
+                V[i,j] = (delta_y**2*(V_copie[i+1,j] + V_copie[i-1,j] ) + delta_x**2*(V_copie[i,j+1] + V_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
+
         raise NotImplementedError
 
     def _solve_in_polar_coordinate(
