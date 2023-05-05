@@ -90,7 +90,15 @@ class LaplaceEquationSolver:
             the electrical components and in the empty space between the electrical components, while the field V
             always gives V(r, θ) = 0 if (r, θ) is not a point belonging to an electrical component of the circuit.
         """
-        raise NotImplementedError
+        P = constant_voltage
+
+        for iteration in range(self.nb_iterations):
+            P_copie = P.copy()
+            for r in range(P.shape[0]):
+                for theta in range(P.shape[1]):
+                    P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
+
+        pass
 
     def solve(
             self,
