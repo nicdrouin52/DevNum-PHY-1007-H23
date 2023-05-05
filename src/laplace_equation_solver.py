@@ -49,15 +49,19 @@ class LaplaceEquationSolver:
             always gives V(x, y) = 0 if (x, y) is not a point belonging to an electrical component of the circuit.
         """
         # on a déja la matrice des sources de potentiel
-        V = constant_voltage
+        P = constant_voltage
         # fonction pour calculer le potentiel
         # itérations sur la grille
-        V_copie = V.copy()
-        for i in range(constant_voltage.shape[0]):
-            for j in range(constant_voltage.shape[1]):
-                V[i,j] = (delta_y**2*(V_copie[i+1,j] + V_copie[i-1,j] ) + delta_x**2*(V_copie[i,j+1] + V_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
+        
+        for iteration in range(self.nb_iterations):
+            P_copie = P.copy()
+            for i in range(P.shape[0]):
+                for j in range(P.shape[1]):
+                    P[i,j] = (delta_y**2*(P_copie[i+1,j] + P_copie[i-1,j] ) + delta_x**2*(P_copie[i,j+1] + P_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
 
-        raise NotImplementedError
+
+        # on pourrrait calculer la différence et si ca converger arreter l'iteration
+        pass
 
     def _solve_in_polar_coordinate(
             self,
