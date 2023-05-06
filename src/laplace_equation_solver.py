@@ -78,8 +78,9 @@ class LaplaceEquationSolver:
                     
                     P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
                     
-        if np.max(abs(P_copie - P)) < 10**(-10): # Comparaison avec erreur machine
-                return P_copie
+                    
+                    if np.max(np.fabs(P - P_copie)) < 10**(-10): # Comparaison avec erreur machine
+                        return P_copie
         
         #for iteration in range(self.nb_iterations):
         #    P_copie = P.copy()

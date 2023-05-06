@@ -145,7 +145,9 @@ class World:
         nb_relaxation_iterations : int
             Number of iterations performed to obtain the potential by the relaxation method (default = 1000)
         """
-        self._potential = LaplaceEquationSolver()
+        _potential = LaplaceEquationSolver(nb_relaxation_iterations)
+        k = LaplaceEquationSolver.solve(_potential, self._circuit_voltage, self._coordinate_system, 1, 1)
+        self._potential = k
         return self._potential # Retourne le champ du potentiel dans exemple
 
     def show_circuit(self, nodes_position_in_figure: dict = None):
