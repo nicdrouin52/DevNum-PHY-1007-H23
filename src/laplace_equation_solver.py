@@ -52,7 +52,7 @@ class LaplaceEquationSolver:
         P = constant_voltage
         # fonction pour calculer le potentiel
         # itérations sur la grille
-        
+
         for iteration in range(self.nb_iterations):
             P_copie = P.copy()
             for i in range(P.shape[0]):
