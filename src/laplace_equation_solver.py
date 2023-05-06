@@ -56,20 +56,25 @@ class LaplaceEquationSolver:
             P_copie = P.copy()
             for i in range(P.shape[0]):
                 for j in range(P.shape[1]):
-                    P_voisinB = P_copie[i+1,j]
-                    P_voisinH = P_copie[i-1,j]
-                    P_voisinD = P_copie[i,j+1]
-                    P_voisinG = P_copie[i,j-1]
-
                     if j+1 == len(P[0]):
                         P_voisinD = 0
+                    else :
+                        P_voisinD = P_copie[i,j+1]
+
                     if j-1 < 0:
                         P_voisinG = 0
+                    else :
+                        P_voisinG = P_copie[i,j-1]
 
                     if i+1 == len(P):
                         P_voisinB = 0
+                    else :
+                        P_voisinB = P_copie[i+1,j]
+
                     if i-1 < 0:
                         P_voisinH = 0
+                    else :
+                        P_voisinH = P_copie[i-1,j]
                     
                     P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
                     
@@ -119,20 +124,26 @@ class LaplaceEquationSolver:
             P_copie = P.copy()
             for r in range(P.shape[0]):
                 for theta in range(P.shape[1]):
-                    P_voisinB = P_copie[r+1,theta]
-                    P_voisinH = P_copie[r-1,theta]
-                    P_voisinD = P_copie[r,theta+1]
-                    P_voisinG = P_copie[r,theta-1]
-
                     if theta+1 == len(P[0]):
                         P_voisinD = 0
+                    else :
+                        P_voisinD = P_copie[r,theta+1]
+
                     if theta-1 < 0:
                         P_voisinG = 0
+                    else : 
+                        P_voisinG = P_copie[r,theta-1]
 
                     if r+1 == len(P):
                         P_voisinB = 0
+                    else : 
+                        P_voisinB = P_copie[r+1,theta]
+
                     if r-1 < 0:
                         P_voisinH = 0
+                    else :
+                        P_voisinH = P_copie[r-1,theta]
+
                     P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
             if np.max(abs(P_copie - P)) < 10**(-10):
                 return P_copie
