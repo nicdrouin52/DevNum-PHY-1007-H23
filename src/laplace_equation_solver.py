@@ -73,7 +73,7 @@ class LaplaceEquationSolver:
                     
                     P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
                     
-        if np.max(abs(P_copie - P)) < 2.22044604925*10**(-16): # Comparaison avec erreur machine
+        if np.max(abs(P_copie - P)) < 10**(-10): # Comparaison avec erreur machine
                 return P_copie
         
         #for iteration in range(self.nb_iterations):
@@ -119,10 +119,33 @@ class LaplaceEquationSolver:
             P_copie = P.copy()
             for r in range(P.shape[0]):
                 for theta in range(P.shape[1]):
-                    P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
-            if np.max(abs(P_copie - P)) < 2.22044604925e-16:
+                    P_voisinB = P_copie[r+1,theta]
+                    P_voisinH = P_copie[r-1,theta]
+                    P_voisinD = P_copie[r,theta+1]
+                    P_voisinG = P_copie[r,theta-1]
+
+                    if theta+1 == len(P[0]):
+                        P_voisinD = 0
+                    if theta-1 < 0:
+                        P_voisinG = 0
+
+                    if r+1 == len(P):
+                        P_voisinB = 0
+                    if r-1 < 0:
+                        P_voisinH = 0
+                    P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
+            if np.max(abs(P_copie - P)) < 10**(-10):
                 return P_copie
         pass
+
+    #   for iteration in range(self.nb_iterations):
+    #           P_copie = P.copy()
+    #           for r in range(P.shape[0]):
+    #               for theta in range(P.shape[1]):
+    #                   P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
+    #           if np.max(abs(P_copie - P)) < 2.22044604925e-16:
+    #               return P_copie
+    #       pass
 
     def solve(
             self,
