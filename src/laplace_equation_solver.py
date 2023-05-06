@@ -52,17 +52,39 @@ class LaplaceEquationSolver:
         P = constant_voltage
         # fonction pour calculer le potentiel
         # itérations sur la grille
-
         for iteration in range(self.nb_iterations):
             P_copie = P.copy()
             for i in range(P.shape[0]):
                 for j in range(P.shape[1]):
-                    P[i,j] = (delta_y**2*(P_copie[i+1,j] + P_copie[i-1,j] ) + delta_x**2*(P_copie[i,j+1] + P_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
-            if abs(P_copie - P) < 2.22044604925*10**(-16): # Besoin d'une matrice d'erreur machine tho
+                    P_voisinB = P_copie[i+1,j]
+                    P_voisinH = P_copie[i-1,j]
+                    P_voisinD = P_copie[i,j+1]
+                    P_voisinG = P_copie[i,j-1]
+
+                    if j+1 == len(P[0]):
+                        P_voisinD = 0
+                    if j-1 < 0:
+                        P_voisinG = 0
+
+                    if i+1 == len(P):
+                        P_voisinB = 0
+                    if i-1 < 0:
+                        P_voisinH = 0
+                    
+                    P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
+                    
+        if np.max(abs(P_copie - P)) < 2.22044604925*10**(-16): # Comparaison avec erreur machine
                 return P_copie
+        
+        #for iteration in range(self.nb_iterations):
+        #    P_copie = P.copy()
+        #    for i in range(P.shape[0]):
+        #        for j in range(P.shape[1]):
+        #            P[i,j] = (delta_y**2*(P_copie[i+1,j] + P_copie[i-1,j]) + delta_x**2*(P_copie[i,j+1] + P_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
+        #    if np.max(abs(P_copie - P)) < 2.22044604925*10**(-16): # Comparaison avec erreur machine
+        #        return P_copie
         # Il faudrait connaitre l'erreur machine (c'est 2.22044604925e-16 selon mes recherches)
         # on pourrrait calculer la différence et si ca converger arreter l'iteration
-        pass
 
     def _solve_in_polar_coordinate(
             self,
@@ -98,7 +120,7 @@ class LaplaceEquationSolver:
             for r in range(P.shape[0]):
                 for theta in range(P.shape[1]):
                     P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
-            if abs(P_copie - P) < 2.22044604925e-16:
+            if np.max(abs(P_copie - P)) < 2.22044604925e-16:
                 return P_copie
         pass
 
