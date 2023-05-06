@@ -58,8 +58,9 @@ class LaplaceEquationSolver:
             for i in range(P.shape[0]):
                 for j in range(P.shape[1]):
                     P[i,j] = (delta_y**2*(P_copie[i+1,j] + P_copie[i-1,j] ) + delta_x**2*(P_copie[i,j+1] + P_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
-
-
+            if abs(P_copie - P) < 2.22044604925*10**(-16): # Besoin d'une matrice d'erreur machine tho
+                return P_copie
+        # Il faudrait connaitre l'erreur machine (c'est 2.22044604925e-16 selon mes recherches)
         # on pourrrait calculer la différence et si ca converger arreter l'iteration
         pass
 
@@ -97,7 +98,8 @@ class LaplaceEquationSolver:
             for r in range(P.shape[0]):
                 for theta in range(P.shape[1]):
                     P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
-
+            if abs(P_copie - P) < 2.22044604925e-16:
+                return P_copie
         pass
 
     def solve(
