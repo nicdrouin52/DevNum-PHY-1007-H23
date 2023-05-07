@@ -53,14 +53,14 @@ class BiotSavartEquationSolver:
                     for i in Courant:
                         r = [indice_x*delta_x, indice_y*delta_y]
                         r_prime = [i[0]*delta_x, i[1]*delta_y]
-                        r_cursif = np.substract(r, r_prime)
+                        r_cursif = np.subtract(r, r_prime)
                         norme_r_cursif = np.linalg.norm(r_cursif)
                         I = B[i[0]][i[1]]
-                        integrale += np.corss(I,r)/norme_r_cursif**2
+                        integrale += np.cross(I,r)/norme_r_cursif**2
                     B[indice_x,indice_y] = mu_0*integrale/(4*pi)
 
 
-        raise NotImplementedError
+        return B
 
     def _solve_in_polar_coordinate(
             self,
