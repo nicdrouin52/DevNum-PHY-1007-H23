@@ -6,6 +6,7 @@ from scipy.constants import mu_0, pi
 from src.biot_savart_equation_solver import BiotSavartEquationSolver
 from src.circuit import Circuit
 from src.coordinate_and_position import CoordinateSystem, Position
+from src.fields import ScalarField
 from src.fields import VectorField
 from src.laplace_equation_solver import LaplaceEquationSolver
 
@@ -146,8 +147,8 @@ class World:
             Number of iterations performed to obtain the potential by the relaxation method (default = 1000)
         """
         _potential = LaplaceEquationSolver(nb_relaxation_iterations)
-        self._potential = LaplaceEquationSolver.solve(_potential, self._circuit_voltage, self._coordinate_system, 10**(-5), 10**(-5))
-        return self._potential # Retourne le champ du potentiel dans exemple
+        self._potential = LaplaceEquationSolver.solve(_potential, self._circuit_voltage, self._coordinate_system, self.delta_q1, self.delta_q2) # Champ du potentiel
+        self._electric_field = ScalarField.gradient(self._potential) # Champ électrique
 
     def show_circuit(self, nodes_position_in_figure: dict = None):
         """
