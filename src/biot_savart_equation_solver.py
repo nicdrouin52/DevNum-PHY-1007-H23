@@ -38,6 +38,28 @@ class BiotSavartEquationSolver:
             B_z(x, y) are the 3 components of the magnetic vector at a given point (x, y) in space. Note that
             B_x = B_y = 0 is always True in our 2D world.
         """
+        B = electric_current.copy()
+
+        Courant = []
+        for indice_x, x in enumerate(electric_current):
+            for indice_y, y in enumerate(x):
+                if y[0] or y[1] != 0:
+                    Courant.append([indice_x, indice_y])
+
+        for indice_x, x in enumerate(B):
+            for indice_y, y in enumerate(x):
+                if [indice_x, indice_y] not in Courant:
+                    integrale = [0,0,0]
+                    for i in Courant:
+                        r = [indice_x*delta_x, indice_y*delta_y]
+                        r_prime = [i[0]*delta_x, i[1]*delta_y]
+                        r_cursif = np.substract(r, r_prime)
+                        norme_r_cursif = np.linalg.norm(r_cursif)
+                        I = B[i[0]][i[1]]
+                        integrale += np.corss(I,r)/norme_r_cursif**2
+                    B[indice_x,indice_y] = mu_0*integrale/(4*pi)
+
+
         raise NotImplementedError
 
     def _solve_in_polar_coordinate(
