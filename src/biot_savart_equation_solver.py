@@ -38,7 +38,29 @@ class BiotSavartEquationSolver:
             B_z(x, y) are the 3 components of the magnetic vector at a given point (x, y) in space. Note that
             B_x = B_y = 0 is always True in our 2D world.
         """
-        raise NotImplementedError
+        B = electric_current.copy()
+
+        Courant = []
+        for indice_x, x in enumerate(electric_current):
+            for indice_y, y in enumerate(x):
+                if y[0] or y[1] != 0:
+                    Courant.append([indice_x, indice_y])
+
+        for indice_x, x in enumerate(B):
+            for indice_y, y in enumerate(x):
+                if [indice_x, indice_y] not in Courant:
+                    integrale = [0,0,0]
+                    for i in Courant:
+                        r = [indice_x*delta_x, indice_y*delta_y]
+                        r_prime = [i[0]*delta_x, i[1]*delta_y]
+                        r_cursif = np.subtract(r, r_prime)
+                        norme_r_cursif = np.linalg.norm(r_cursif)
+                        I = B[i[0]][i[1]]
+                        integrale += np.cross(I,r)/norme_r_cursif**2
+                    B[indice_x,indice_y] = mu_0*integrale/(4*pi)
+
+
+        return B
 
     def _solve_in_polar_coordinate(
             self,
@@ -67,7 +89,29 @@ class BiotSavartEquationSolver:
             B_z(r, θ) are the 3 components of the magnetic vector at a given point (r, θ) in space. Note that
             B_r = B_θ = 0 is always True in our 2D world.
         """
-        raise NotImplementedError
+        B = electric_current.copy()
+
+        Courant = []
+        for indice_rayon, rayon in enumerate(electric_current):
+            for indice_theta, theta in enumerate(x):
+                if theta[0] or theta[1] != 0:
+                    Courant.append([indice_rayon, indice_theta])
+
+        for indice_rayon, rayon in enumerate(B):
+            for indice_theta, theta in enumerate(rayon):
+                if [indice_rayon, indice_theta] not in Courant:
+                    integrale = [0,0,0]
+                    for i in Courant:
+                        r = [indice_rayon*delta_r, indice_theta*delta_theta]
+                        r_prime = [i[0]*delta_r, i[1]*delta_theta]
+                        r_cursif = np.subtract(r, r_prime)
+                        norme_r_cursif = np.linalg.norm(r_cursif)
+                        I = B[i[0]][i[1]]
+                        integrale += np.cross(I,r)/norme_r_cursif**2
+                    B[indice_rayon,indice_theta] = mu_0*integrale/(4*pi)
+
+
+        return B
 
     def solve(
             self,
