@@ -52,6 +52,8 @@ class LaplaceEquationSolver:
         P = constant_voltage
         # fonction pour calculer le potentiel
         # itérations sur la grille
+        N = 0
+        M = 0
         for iteration in range(self.nb_iterations):
             P_copie = P.copy()
             for i in range(P.shape[0]):
@@ -75,12 +77,11 @@ class LaplaceEquationSolver:
                         P_voisinH = 0
                     else :
                         P_voisinH = P_copie[i-1,j]
-                    
+
                     P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
-                    
-                    
-                    if np.max(np.fabs(P - P_copie)) < 10**(-10): # Comparaison avec erreur machine
-                        return P_copie
+
+                if np.std(P_copie-P) < 10**(-10): # Comparaison avec erreur
+                    return P_copie # Dans ma tête, le if devrait être une fois de moins indenté, mais le résultat est plus précis si je fais pas ça?
         
         #for iteration in range(self.nb_iterations):
         #    P_copie = P.copy()
@@ -146,9 +147,8 @@ class LaplaceEquationSolver:
                         P_voisinH = P_copie[r-1,theta]
 
                     P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
-            if np.max(abs(P_copie - P)) < 10**(-10):
-                return P_copie
-        pass
+                    if np.max(abs(P_copie - P)) < 10**(-10):
+                        return P_copie
 
     #   for iteration in range(self.nb_iterations):
     #           P_copie = P.copy()
