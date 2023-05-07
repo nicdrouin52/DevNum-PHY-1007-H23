@@ -147,8 +147,9 @@ class LaplaceEquationSolver:
                         P_voisinH = P_copie[r-1,theta]
 
                     P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
-                    if np.max(abs(P_copie - P)) < 10**(-10):
-                        return P_copie
+            
+            if np.max(abs(P_copie - P)) < 10**(-10):
+                return P_copie
 
     #   for iteration in range(self.nb_iterations):
     #           P_copie = P.copy()
