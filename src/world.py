@@ -7,6 +7,7 @@ from src.biot_savart_equation_solver import BiotSavartEquationSolver
 from src.circuit import Circuit
 from src.coordinate_and_position import CoordinateSystem, Position
 from src.fields import VectorField
+from src.fields import ScalarField
 from src.laplace_equation_solver import LaplaceEquationSolver
 
 
@@ -76,11 +77,11 @@ class World:
         voltage, current = self._circuit.get_voltage_and_current_fields(self._shape, self.minimum, self.maximum)
         self._circuit_voltage = voltage
         self._circuit_current = current
-
-        self._electric_field = None
-        self._energy_flux = None
-        self._magnetic_field = None
+        
         self._potential = None
+        self._electric_field = None
+        self._magnetic_field = None
+        self._energy_flux = None
 
     @property
     def minimum(self) -> Position:
@@ -145,9 +146,16 @@ class World:
         nb_relaxation_iterations : int
             Number of iterations performed to obtain the potential by the relaxation method (default = 1000)
         """
-        _potential = LaplaceEquationSolver(nb_relaxation_iterations)
-        self._potential = LaplaceEquationSolver.solve(_potential, self._circuit_voltage, self._coordinate_system, 10**(-5), 10**(-5))
-        return self._potential # Retourne le champ du potentiel dans exemple
+        #calcul pot
+        self._potential = LaplaceEquationSolver(nb_relaxation_iterations).solve(self._circuit_voltage, self._coordinate_system, self.delta_q1, self.delta_q2)
+        self._electric_field = -self._potential.gradient()
+        #
+        self._magnetic_field = BiotSavartEquationSolver().solve(self._circuit_current, self._coordinate_system, self.delta_q1, self.delta_q2)
+        #déf du vecteur de Poynting
+        self._energy_flux = self._electric_field.cross(self._magnetic_field) / mu_0
+
+        # return self._potential# Retourne le champ du potentiel dans exemple
+        # on doit rien retourner me semble ?
 
     def show_circuit(self, nodes_position_in_figure: dict = None):
         """
