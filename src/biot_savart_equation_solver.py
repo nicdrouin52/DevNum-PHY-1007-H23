@@ -65,9 +65,13 @@ class BiotSavartEquationSolver:
                         r = [indice_x*delta_x, indice_y*delta_y]
                         r_prime = [i[0]*delta_x, i[1]*delta_y]
                         r_cursif = np.subtract(r, r_prime)
+
                         norme_r_cursif = np.linalg.norm(r_cursif)
+
                         I = B[i[0]][i[1]]
+
                         integrale += np.cross(I,r)/norme_r_cursif**2
+                        
                     B[indice_x,indice_y] = mu_0*integrale/(4*pi)
 
 
@@ -109,12 +113,15 @@ class BiotSavartEquationSolver:
             B = electric_current.copy()
         # juste un copier/coller de cartesien...
 
-
         Courant = []
         for indice_rayon, rayon in enumerate(electric_current):
-            for indice_theta, theta in enumerate(x):
-                if theta[0] or theta[1] != 0:
-                    Courant.append([indice_rayon, indice_theta])
+            for indice_theta, theta in enumerate(rayon):
+                if len(theta) == 3:
+                    if theta[0] or theta[1] or theta[2] != 0:
+                        Courant.append([indice_rayon, indice_theta])
+                else:
+                    if theta[0] or theta[1] != 0:
+                        Courant.append([indice_rayon, indice_theta])
 
         for indice_rayon, rayon in enumerate(B):
             for indice_theta, theta in enumerate(rayon):
