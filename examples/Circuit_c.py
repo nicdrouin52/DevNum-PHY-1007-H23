@@ -13,11 +13,11 @@ if __name__ == "__main__":
     cartesian_variables = Symbol("x"), Symbol("y")
     x, y = cartesian_variables
 
-    x_expression_droite = (30**2 - (y - 30)**2)**(1/2)
+    x_expression_droite = np.real(30**2 - (y - 30)**2)**(1/2)
     y_expression_droite = y
     droite_eqs = (x_expression_droite, y_expression_droite)
 
-    x_expression_gauche = -(30**2 - (y - 30)**2)**(1/2)
+    x_expression_gauche = np.real(-(30**2 - (y - 30)**2)**(1/2))
     y_expression_gauche = y
     gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
