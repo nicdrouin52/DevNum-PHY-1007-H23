@@ -20,7 +20,7 @@ class ElectricalComponent:
             self,
             start_position: Position,
             stop_position: Position,
-            wire_parametric_equations,
+            wire_p arametric_equations,
             variables,
             label: str
     ):

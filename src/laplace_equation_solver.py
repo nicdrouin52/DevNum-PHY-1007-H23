@@ -51,48 +51,59 @@ class LaplaceEquationSolver:
         # on a déja la matrice des sources de potentiel
         P = constant_voltage.copy()
         # copie de la première matrice
-        P_copie = P.copy()
+        P_copie = constant_voltage.copy()
         
         #on initialise une liste vide pour les points constants dans la matrice
         point_ct = []
-        for i in range(constant_voltage.shape[0]):
-            for j in range(constant_voltage.shape[1]):
-                if constant_voltage[i][j] != 0:
-                    point_ct.append((i, j))
+        for indice_i, i in enumerate(constant_voltage):
+            for indice_j, j in enumerate(i):
+                if j!= 0:
+                    point_ct.append((indice_i, indice_j))
 
         # fonction pour calculer le potentiel
         # itérations sur la grille
         N = 0
         for iteration in range(self.nb_iterations):
             N += 1
-            for i in range(P.shape[0]):
-                for j in range(P.shape[1]):
-                    if (i, j) in point_ct:
+            for indice_x, i in enumerate(P):
+                if indice_x == 0 or indice_x == P.shape[0]-1:
+                    continue
+                for indice_y, j in enumerate(i):
+                    if indice_y == 0 or indice_y == P.shape[1]-1:
                         continue
-                    if j+1 == len(P[0]):
-                        P_voisinD = 0
-                    else :
-                        P_voisinD = P[i][j+1]
+                    if (indice_x, indice_y) in point_ct:
+                        continue
 
-                    if j-1 < 0:
-                        P_voisinG = 0
-                    else :
-                        P_voisinG = P[i][j-1]
+                    P_copie[indice_x, indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y]) + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
 
-                    if i+1 == len(P):
-                        P_voisinB = 0
-                    else :
-                        P_voisinB = P[i+1][j]
 
-                    if i-1 < 0:
-                        P_voisinH = 0
-                    else :
-                        P_voisinH = P[i-1][j]
 
-                    P_copie[i][j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
 
-            if np.max(np.abs(P_copie-P)) < 10**(-5): # Comparaison avec erreur
-                print(N)
+#                    if j+1 == len(P[0]):
+#                        P_voisinD = 0
+#                    else :
+#                        P_voisinD = P[i][j+1]#
+
+#                    if j-1 < 0:
+ #                       P_voisinG = 0
+  #                  else :
+   #                     P_voisinG = P[i][j-1]
+#
+ #                   if i+1 == len(P):
+  #                      P_voisinB = 0
+   #                 else :
+    #                    P_voisinB = P[i+1][j]
+#
+ #                   if i-1 < 0:
+  #                      P_voisinH = 0
+   #                 else :
+    #                    P_voisinH = P[i-1][j]
+
+ #                   P_copie[i][j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
+
+            ecart = np.max(np.abs(P_copie-P))
+            if ecart < 10**(-5): # Comparaison avec erreur
+                print(f'iter # {N}')
                 break 
             else:
                 P = P_copie.copy()
