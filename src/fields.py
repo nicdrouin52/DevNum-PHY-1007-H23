@@ -33,7 +33,7 @@ class ScalarField(np.ndarray):
         Returns
         -------
         field : ScalarField
-            The new vector field as a numpy array.
+            The new scalar field as a numpy array.
         """
         input_dimension = len(field.shape)
 

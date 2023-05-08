@@ -1,4 +1,5 @@
 import numpy as np
+#import scipy
 
 from src.circuit_node import CircuitNode
 from src.coordinate_and_position import Position
@@ -10,7 +11,7 @@ class ElectricalComponent:
     create a circuit. This includes wires, voltage sources, and current sources. All electrical components have a
     label, a start position, and a stop position. They also require parametric equations to define the 2D function
     connecting the start to the stop. The parametric equations must be made with the scipy library. To do this, you
-    must fist define the two variables to be used in the equations. Then, you can define the equations using these
+    must first define the two variables to be used in the equations. Then, you can define the equations using these
     variables. It is important to note that the equation goes through the origin, given that the origin is associated
     to the start position. In other words, the given parametric equation is drawn from the start position to the stop
     position.
@@ -20,7 +21,7 @@ class ElectricalComponent:
             self,
             start_position: Position,
             stop_position: Position,
-            wire_p arametric_equations,
+            wire_parametric_equations,
             variables,
             label: str
     ):
