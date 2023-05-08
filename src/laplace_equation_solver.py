@@ -57,12 +57,12 @@ class LaplaceEquationSolver:
         point_ct = []
         for indice_i, i in enumerate(constant_voltage):
             for indice_j, j in enumerate(i):
-                if j!= 0:
+                if j != 0:
                     point_ct.append((indice_i, indice_j))
 
         # fonction pour calculer le potentiel
         # itérations sur la grille
-        N = 0
+        N = 0.0
         for iteration in range(self.nb_iterations):
             N += 1
             for indice_x, i in enumerate(P):
@@ -109,15 +109,7 @@ class LaplaceEquationSolver:
                 P = P_copie.copy()
 
         return(P)
-        #for iteration in range(self.nb_iterations):
-        #    P_copie = P.copy()
-        #    for i in range(P.shape[0]):
-        #        for j in range(P.shape[1]):
-        #            P[i,j] = (delta_y**2*(P_copie[i+1,j] + P_copie[i-1,j]) + delta_x**2*(P_copie[i,j+1] + P_copie[i,j-1])) / 2*(delta_x**2 + delta_y**2)
-        #    if np.max(abs(P_copie - P)) < 2.22044604925*10**(-16): # Comparaison avec erreur machine
-        #        return P_copie
-        # Il faudrait connaitre l'erreur machine (c'est 2.22044604925e-16 selon mes recherches)
-        # on pourrrait calculer la différence et si ca converger arreter l'iteration
+
 
     def _solve_in_polar_coordinate(
             self,
@@ -146,37 +138,80 @@ class LaplaceEquationSolver:
             the electrical components and in the empty space between the electrical components, while the field V
             always gives V(r, θ) = 0 if (r, θ) is not a point belonging to an electrical component of the circuit.
         """
-        P = constant_voltage
+                # on a déja la matrice des sources de potentiel
+        P = constant_voltage.copy()
+        # copie de la première matrice
+        P_copie = constant_voltage.copy()
+        
+        #on initialise une liste vide pour les points constants dans la matrice
+        point_ct = []
+        for indice_i, i in enumerate(constant_voltage):
+            for indice_j, j in enumerate(i):
+                if j!= 0:
+                    point_ct.append((indice_i, indice_j))
+
+        # fonction pour calculer le potentiel
+        # itérations sur la grille
+        N = 0
         for iteration in range(self.nb_iterations):
-            P_copie = P.copy()
             N += 1
-            for r in range(P.shape[0]):
-                for theta in range(P.shape[1]):
-                    if theta+1 == len(P[0]):
-                        P_voisinD = 0
-                    else :
-                        P_voisinD = P_copie[r,theta+1]
+            for indice_r, r in enumerate(P):
+                if indice_r == 0 or indice_r == P.shape[0]-1:
+                    continue
+                for indice_theta, theta in enumerate(r):
+                    if indice_theta == 0 or indice_theta == P.shape[1]-1:
+                        continue
+                    if (indice_r, indice_theta) in point_ct:
+                        continue
 
-                    if theta-1 < 0:
-                        P_voisinG = 0
-                    else : 
-                        P_voisinG = P_copie[r,theta-1]
+                    P_copie[indice_r, indice_theta] = (2*r**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta])+r*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta])+2*r**2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1])) / 4*(r**2*delta_theta + delta_r)
 
-                    if r+1 == len(P):
-                        P_voisinB = 0
-                    else : 
-                        P_voisinB = P_copie[r+1,theta]
+            ecart = np.max(np.abs(P_copie-P))
+            if ecart < 10**(-5): # Comparaison avec erreur
+                print(f'iter # {N}')
+                break 
+            else:
+                P = P_copie.copy()
 
-                    if r-1 < 0:
-                        P_voisinH = 0
-                    else :
-                        P_voisinH = P_copie[r-1,theta]
+        return(P)
 
-                    P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
-            
-            if np.max(abs(P_copie - P)) < 10**(-5):
-                print(N)
-                return P_copie
+
+
+
+
+
+#        P = constant_voltage
+#        for iteration in range(self.nb_iterations):
+#            P_copie = P.copy()
+#            N += 1
+#            for r in range(P.shape[0]):
+#                for theta in range(P.shape[1]):
+#                    if theta+1 == len(P[0]):
+#                        P_voisinD = 0
+#                    else :
+#                        P_voisinD = P_copie[r,theta+1]
+#
+#
+#                    if theta-1 < 0:
+#                        P_voisinG = 0
+#                    else : 
+#                        P_voisinG = P_copie[r,theta-1]
+
+#                    if r+1 == len(P):
+#                        P_voisinB = 0
+#                    else : 
+#                        P_voisinB = P_copie[r+1,theta]
+
+#                    if r-1 < 0:
+#                        P_voisinH = 0
+#                    else :
+#                        P_voisinH = P_copie[r-1,theta]
+
+#                    P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
+#            
+#            if np.max(abs(P_copie - P)) < 10**(-5):
+#                print(N)
+#                return P_copie
 
     #   for iteration in range(self.nb_iterations):
     #           P_copie = P.copy()
