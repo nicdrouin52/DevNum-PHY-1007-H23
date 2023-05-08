@@ -55,6 +55,7 @@ class LaplaceEquationSolver:
         N = 0
         M = 0
         for iteration in range(self.nb_iterations):
+            N += 1
             P_copie = P.copy()
             for i in range(P.shape[0]):
                 for j in range(P.shape[1]):
@@ -80,8 +81,11 @@ class LaplaceEquationSolver:
 
                     P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
 
-                if np.std(P_copie-P) < 10**(-10): # Comparaison avec erreur
-                    return P_copie # Dans ma tête, le if devrait être une fois de moins indenté, mais le résultat est plus précis si je fais pas ça?
+            if np.max(np.abs(P_copie-P)) < 10**(-2): # Comparaison avec erreur
+                print(N)
+                return P_copie 
+            else:
+                P_copie = P.copy()
         
         #for iteration in range(self.nb_iterations):
         #    P_copie = P.copy()
@@ -121,9 +125,9 @@ class LaplaceEquationSolver:
             always gives V(r, θ) = 0 if (r, θ) is not a point belonging to an electrical component of the circuit.
         """
         P = constant_voltage
-
         for iteration in range(self.nb_iterations):
             P_copie = P.copy()
+            N += 1
             for r in range(P.shape[0]):
                 for theta in range(P.shape[1]):
                     if theta+1 == len(P[0]):
@@ -148,7 +152,8 @@ class LaplaceEquationSolver:
 
                     P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
             
-            if np.max(abs(P_copie - P)) < 10**(-10):
+            if np.max(abs(P_copie - P)) < 10**(-5):
+                print(N)
                 return P_copie
 
     #   for iteration in range(self.nb_iterations):
