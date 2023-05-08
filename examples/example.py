@@ -39,6 +39,7 @@ if __name__ == "__main__":
     world.show_circuit(
         {0: (26, 60), 1: (26, 74), 2: (74, 74), 3: (74, 60), 4: (74, 40), 5: (74, 26), 6: (26, 26), 7: (26, 40)}
     )
+    world.show_circuit_voltage()
     world.compute()
     world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
     world.show_electric_field(False)

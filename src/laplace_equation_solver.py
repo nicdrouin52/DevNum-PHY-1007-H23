@@ -49,44 +49,55 @@ class LaplaceEquationSolver:
             always gives V(x, y) = 0 if (x, y) is not a point belonging to an electrical component of the circuit.
         """
         # on a déja la matrice des sources de potentiel
-        P = constant_voltage
+        P = constant_voltage.copy()
+        # copie de la première matrice
+        P_copie = P.copy()
+        
+        #on initialise une liste vide pour les points constants dans la matrice
+        point_ct = []
+        for i in range(constant_voltage.shape[0]):
+            for j in range(constant_voltage.shape[1]):
+                if constant_voltage[i][j] != 0:
+                    point_ct.append((i, j))
+
         # fonction pour calculer le potentiel
         # itérations sur la grille
         N = 0
-        M = 0
         for iteration in range(self.nb_iterations):
             N += 1
-            P_copie = P.copy()
             for i in range(P.shape[0]):
                 for j in range(P.shape[1]):
+                    if (i, j) in point_ct:
+                        continue
                     if j+1 == len(P[0]):
                         P_voisinD = 0
                     else :
-                        P_voisinD = P_copie[i,j+1]
+                        P_voisinD = P[i][j+1]
 
                     if j-1 < 0:
                         P_voisinG = 0
                     else :
-                        P_voisinG = P_copie[i,j-1]
+                        P_voisinG = P[i][j-1]
 
                     if i+1 == len(P):
                         P_voisinB = 0
                     else :
-                        P_voisinB = P_copie[i+1,j]
+                        P_voisinB = P[i+1][j]
 
                     if i-1 < 0:
                         P_voisinH = 0
                     else :
-                        P_voisinH = P_copie[i-1,j]
+                        P_voisinH = P[i-1][j]
 
-                    P[i,j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
+                    P_copie[i][j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
 
-            if np.max(np.abs(P_copie-P)) < 10**(-2): # Comparaison avec erreur
+            if np.max(np.abs(P_copie-P)) < 10**(-5): # Comparaison avec erreur
                 print(N)
-                return P_copie 
+                break 
             else:
-                P_copie = P.copy()
-        
+                P = P_copie.copy()
+
+        return(P)
         #for iteration in range(self.nb_iterations):
         #    P_copie = P.copy()
         #    for i in range(P.shape[0]):
