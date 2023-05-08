@@ -151,9 +151,9 @@ class World:
         self._potential = LaplaceEquationSolver(nb_relaxation_iterations).solve(self._circuit_voltage, self._coordinate_system, self.delta_q1, self.delta_q2)
         self._electric_field = -self._potential.gradient()
         #
-        #self._magnetic_field = BiotSavartEquationSolver().solve(self._circuit_current, self._coordinate_system, self.delta_q1, self.delta_q2)
+        self._magnetic_field = BiotSavartEquationSolver().solve(self._circuit_current, self._coordinate_system, self.delta_q1, self.delta_q2)
         #déf du vecteur de Poynting
-        #self._energy_flux = self._electric_field.cross(self._magnetic_field) / mu_0
+        self._energy_flux = self._electric_field.cross(self._magnetic_field) / mu_0
 
         # return self._potential# Retourne le champ du potentiel dans exemple
         # on doit rien retourner me semble ?
