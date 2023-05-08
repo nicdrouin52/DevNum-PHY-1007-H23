@@ -38,7 +38,8 @@ class BiotSavartEquationSolver:
             B_z(x, y) are the 3 components of the magnetic vector at a given point (x, y) in space. Note that
             B_x = B_y = 0 is always True in our 2D world.
         """
-        # ca disait que le B était 2d, on regle ca
+        # Si le champs du courant est en 2D on le transforme en
+        # un champs 3D à coordonnées I_z = 0
         if electric_current.shape[2] == 2:
             B = np.zeros(shape=(electric_current.shape[0], electric_current.shape[1], 3))
             B[:,:, :2] = electric_current
@@ -46,8 +47,9 @@ class BiotSavartEquationSolver:
         else:
             B = electric_current.copy()
 
-
+        # on crée une liste vide pour les points où circule un courant
         Courant = []
+        # on ajoute tous les points où circule un courant
         for indice_x, x in enumerate(electric_current):
             for indice_y, y in enumerate(x):
                 if len(y) == 3:
@@ -57,21 +59,34 @@ class BiotSavartEquationSolver:
                     if y[0] or y[1] != 0:
                         Courant.append([indice_x, indice_y])
 
+        # on itère sur toute la grille
         for indice_x, x in enumerate(B):
             for indice_y, y in enumerate(x):
+                # on exclut les points où circule un courant
                 if [indice_x, indice_y] not in Courant:
+                    # on initialise le résultat de l'intégrale
+                    # issu de la loi de Biot-Savart
                     integrale = [0,0,0]
+                    # on somme la contribution au champs de chaque 
+                    # petit bout de fil où circule un courant
                     for i in Courant:
+                        # vecteur de l'origine -> point où le champs est calculé
                         r = [indice_x*delta_x, indice_y*delta_y]
+                        # vecteur de l'origine -> élément de fil
                         r_prime = [i[0]*delta_x, i[1]*delta_y]
+                        # vecteur de l'élément de fil -> point où le champs est calculé
                         r_cursif = np.subtract(r, r_prime)
-
+                        
+                        # norme de r cursif
                         norme_r_cursif = np.linalg.norm(r_cursif)
 
+                        # courant à du au bout de fil
                         I = B[i[0]][i[1]]
 
+                        # on ajoute la contribution de ce petit bout de fil à notre intégrale
                         integrale += np.cross(I,r_cursif)/norme_r_cursif**2
 
+                    # de la loi de Biot-Savart :
                     B[indice_x][indice_y] = mu_0*integrale/(4*pi)
 
         return B
@@ -103,7 +118,8 @@ class BiotSavartEquationSolver:
             B_z(r, θ) are the 3 components of the magnetic vector at a given point (r, θ) in space. Note that
             B_r = B_θ = 0 is always True in our 2D world.
         """
-        # ca disait que le B était 2d, on regle ca
+        # Si le champs du courant est en 2D on le transforme en
+        # un champs 3D à coordonnées I_z = 0
         if electric_current.shape[2] == 2:
             B = np.zeros(shape=(electric_current.shape[0], electric_current.shape[1], 3))
             B[:,:, :2] = electric_current
@@ -112,7 +128,9 @@ class BiotSavartEquationSolver:
             B = electric_current.copy()
         # juste un copier/coller de cartesien...
 
+        # on crée une liste vide pour les points où circule un courant
         Courant = []
+        # on ajoute tous les points où circule un courant
         for indice_rayon, rayon in enumerate(electric_current):
             for indice_theta, theta in enumerate(rayon):
                 if len(theta) == 3:
@@ -122,17 +140,32 @@ class BiotSavartEquationSolver:
                     if theta[0] or theta[1] != 0:
                         Courant.append([indice_rayon, indice_theta])
 
+        # on itère sur toute la grille
         for indice_rayon, rayon in enumerate(B):
             for indice_theta, theta in enumerate(rayon):
+                # on exclut les points où circule un courant
                 if [indice_rayon, indice_theta] not in Courant:
+                    # on initialise le résultat de l'intégrale
+                    # issu de la loi de Biot-Savart
                     integrale = [0,0,0]
+                    # on somme la contribution au champs de chaque 
+                    # petit bout de fil où circule un courant
                     for i in Courant:
+                        # vecteur de l'origine -> point où le champs est calculé
                         r = [indice_rayon*delta_r, indice_theta*delta_theta]
+                        # vecteur de l'origine -> élément de fil
                         r_prime = [i[0]*delta_r, i[1]*delta_theta]
+                        # vecteur de l'élément de fil -> point où le champs est calculé
                         r_cursif = np.subtract(r, r_prime)
+
+                        # norme de r cursif
                         norme_r_cursif = np.linalg.norm(r_cursif)
+                        # courant à du au bout de fil
                         I = B[i[0]][i[1]]
+                        # on ajoute la contribution de ce petit bout de fil à notre intégrale
                         integrale += np.cross(I,r_cursif)/norme_r_cursif**2
+                    
+                    # de la loi de Biot-Savart :
                     B[indice_rayon][indice_theta] = mu_0*integrale/(4*pi)
 
 
