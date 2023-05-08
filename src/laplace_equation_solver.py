@@ -62,47 +62,29 @@ class LaplaceEquationSolver:
                 if j != 0:
                     point_ct.append((indice_i, indice_j))
 
+        # nombre d'itérations
+        N = 0.0
         # fonction pour calculer le potentiel
         # itérations sur la grille
-        N = 0.0
         for iteration in range(self.nb_iterations):
             N += 1
             for indice_x, i in enumerate(P):
+                # on n'itère que sur les points à l'intérieur 
+                # de la grille, pas sur les limites
                 if indice_x == 0 or indice_x == P.shape[0]-1:
                     continue
                 for indice_y, j in enumerate(i):
                     if indice_y == 0 or indice_y == P.shape[1]-1:
                         continue
+
+                    # on n'itère pas sur les points à potentiel constant
                     if (indice_x, indice_y) in point_ct:
                         continue
 
+                    # On relaxe le point
                     P_copie[indice_x, indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y]) + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
 
-
-
-
-#                    if j+1 == len(P[0]):
-#                        P_voisinD = 0
-#                    else :
-#                        P_voisinD = P[i][j+1]#
-
-#                    if j-1 < 0:
- #                       P_voisinG = 0
-  #                  else :
-   #                     P_voisinG = P[i][j-1]
-#
- #                   if i+1 == len(P):
-  #                      P_voisinB = 0
-   #                 else :
-    #                    P_voisinB = P[i+1][j]
-#
- #                   if i-1 < 0:
-  #                      P_voisinH = 0
-   #                 else :
-    #                    P_voisinH = P[i-1][j]
-
- #                   P_copie[i][j] = (delta_y**2*(P_voisinB + P_voisinH) + delta_x**2*(P_voisinD + P_voisinG)) / 2*(delta_x**2 + delta_y**2)
-
+            # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
             if ecart < 10**(-5): # Comparaison avec erreur
                 print(f'iter # {N}')
@@ -140,34 +122,43 @@ class LaplaceEquationSolver:
             the electrical components and in the empty space between the electrical components, while the field V
             always gives V(r, θ) = 0 if (r, θ) is not a point belonging to an electrical component of the circuit.
         """
-                # on a déja la matrice des sources de potentiel
+        # On a déjà la matrice des sources de potentiel, on la nomme P
         P = constant_voltage.copy()
-        # copie de la première matrice
+        # Copie de la première matrice, servira pour les itérations
         P_copie = constant_voltage.copy()
         
-        #on initialise une liste vide pour les points constants dans la matrice
+        # Les sources de potentiel doivent rester au même potentiel pour la suite
+        # On initialise une liste vide pour les points de potentiel constant dans la matrice
         point_ct = []
+        # On ajoute à cette liste tous les points qui sont une source de potentiel
         for indice_i, i in enumerate(constant_voltage):
             for indice_j, j in enumerate(i):
                 if j!= 0:
                     point_ct.append((indice_i, indice_j))
 
+        # nombre d'itérations
+        N = 0.0
         # fonction pour calculer le potentiel
         # itérations sur la grille
-        N = 0
         for iteration in range(self.nb_iterations):
             N += 1
             for indice_r, r in enumerate(P):
+                # on n'itère que sur les points à l'intérieur 
+                # de la grille, pas sur les limites
                 if indice_r == 0 or indice_r == P.shape[0]-1:
                     continue
                 for indice_theta, theta in enumerate(r):
                     if indice_theta == 0 or indice_theta == P.shape[1]-1:
                         continue
+
+                    # on n'itère pas sur les points à potentiel constant
                     if (indice_r, indice_theta) in point_ct:
                         continue
 
+                    # On relaxe le point
                     P_copie[indice_r, indice_theta] = (2*r**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta])+r*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta])+2*r**2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1])) / 4*(r**2*delta_theta + delta_r)
 
+            # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
             if ecart < 10**(-5): # Comparaison avec erreur
                 print(f'iter # {N}')
@@ -177,52 +168,6 @@ class LaplaceEquationSolver:
 
         return(P)
 
-
-
-
-
-
-#        P = constant_voltage
-#        for iteration in range(self.nb_iterations):
-#            P_copie = P.copy()
-#            N += 1
-#            for r in range(P.shape[0]):
-#                for theta in range(P.shape[1]):
-#                    if theta+1 == len(P[0]):
-#                        P_voisinD = 0
-#                    else :
-#                        P_voisinD = P_copie[r,theta+1]
-#
-#
-#                    if theta-1 < 0:
-#                        P_voisinG = 0
-#                    else : 
-#                        P_voisinG = P_copie[r,theta-1]
-
-#                    if r+1 == len(P):
-#                        P_voisinB = 0
-#                    else : 
-#                        P_voisinB = P_copie[r+1,theta]
-
-#                    if r-1 < 0:
-#                        P_voisinH = 0
-#                    else :
-#                        P_voisinH = P_copie[r-1,theta]
-
-#                    P[r,theta] = (2*r**2*delta_theta**2*(P_voisinB+P_voisinH)+r*delta_r*delta_theta**2*(P_voisinB-P_voisinH)+2*r**2*delta_r**2*(P_voisinD + P_voisinG)) / 4*(r**2*delta_theta + delta_r)
-#            
-#            if np.max(abs(P_copie - P)) < 10**(-5):
-#                print(N)
-#                return P_copie
-
-    #   for iteration in range(self.nb_iterations):
-    #           P_copie = P.copy()
-    #           for r in range(P.shape[0]):
-    #               for theta in range(P.shape[1]):
-    #                   P[r,theta] = (2*r**2*delta_theta**2*(P_copie[r+1,theta]+P_copie[r-1,theta])+r*delta_r*delta_theta**2*(P_copie[r+1,theta]-P_copie[r-1,theta])+2*r**2*delta_r**2*(P_copie[r,theta+1]+P_copie[r,theta-1])) / 4*(r**2*delta_theta + delta_r)
-    #           if np.max(abs(P_copie - P)) < 2.22044604925e-16:
-    #               return P_copie
-    #       pass
 
     def solve(
             self,
