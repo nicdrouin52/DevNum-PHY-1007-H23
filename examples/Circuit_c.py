@@ -1,4 +1,5 @@
 import env_examples  # Modifies path, DO NOT REMOVE
+import numpy as np
 from sympy import Symbol
 from src import Circuit, CoordinateSystem, VoltageSource, Wire, World
 
@@ -12,25 +13,27 @@ if __name__ == "__main__":
     cartesian_variables = Symbol("x"), Symbol("y")
     x, y = cartesian_variables
 
-    x_expression_vertical = 0 * x
-    y_expression_vertical = y
-    vertical_eqs = (x_expression_vertical, y_expression_vertical)
+    x_expression_droite = (30**2 - (y - 30)**2)**(1/2)
+    y_expression_droite = y
+    droite_eqs = (x_expression_droite, y_expression_droite)
 
-    x_expression_horizontal = x
-    y_expression_horizontal = 0 * y
-    horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
+    x_expression_gauche = -(30**2 - (y - 30)**2)**(1/2)
+    y_expression_gauche = y
+    gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
     wires = [
-    
+#        VoltageSource((0, 0), (0, 20), gauche_eqs, cartesian_variables, BATTERY_VOLTAGE),
+        Wire((0, 0), (0, 60), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((48, 80), (50, 80), gauche_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+        Wire((0, 60), (0, 0), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
     ]
-    ground_position = (80, 48)
+    ground_position = (0, 0)
 
 
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
-        {0: (80, 48), 1:(80, 20), 2:(60, 20), 3: (40, 20), 4: (20, 20), 5: (20, 48), 6: (20, 52), 7: (20, 80),
-         8: (40, 80), 9: (60, 80), 10: (80, 80), 11: (80, 52), 12: (40, 55), 13: (40, 45), 14: (60, 55), 15: (60, 45)}
+        {0: (0, 0), 1:(0, 60)}
     )
     world.compute()
     world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
