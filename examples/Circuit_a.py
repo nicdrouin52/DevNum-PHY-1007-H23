@@ -40,4 +40,4 @@ if __name__ == "__main__":
         {0: (26, 26), 1: (26, 74), 2: (60, 74), 3: (70, 74), 4: (74, 74), 5: (74, 46), 6: (74, 36), 7: (74, 26), 8: (40, 26), 9: (36, 26)}
     )
     world.compute()
-    world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
+    world.show_all() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
