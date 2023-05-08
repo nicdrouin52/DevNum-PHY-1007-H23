@@ -48,13 +48,15 @@ class LaplaceEquationSolver:
             the electrical components and in the empty space between the electrical components, while the field V
             always gives V(x, y) = 0 if (x, y) is not a point belonging to an electrical component of the circuit.
         """
-        # on a déja la matrice des sources de potentiel
+        # On a déjà la matrice des sources de potentiel, on la nomme P
         P = constant_voltage.copy()
-        # copie de la première matrice
+        # Copie de la première matrice, servira pour les itérations
         P_copie = constant_voltage.copy()
         
-        #on initialise une liste vide pour les points constants dans la matrice
+        # Les sources de potentiel doivent rester au même potentiel pour la suite
+        # On initialise une liste vide pour les points de potentiel constant dans la matrice
         point_ct = []
+        # On ajoute à cette liste tous les points qui sont une source de potentiel
         for indice_i, i in enumerate(constant_voltage):
             for indice_j, j in enumerate(i):
                 if j != 0:

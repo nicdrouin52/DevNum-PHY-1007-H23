@@ -50,8 +50,12 @@ class BiotSavartEquationSolver:
         Courant = []
         for indice_x, x in enumerate(electric_current):
             for indice_y, y in enumerate(x):
-                if y[0] or y[1] != 0:
-                    Courant.append([indice_x, indice_y])
+                if len(y) == 3:
+                    if y[0] or y[1] or y[2] != 0:
+                        Courant.append([indice_x, indice_y])
+                else:
+                    if y[0] or y[1] != 0:
+                        Courant.append([indice_x, indice_y])
 
         for indice_x, x in enumerate(B):
             for indice_y, y in enumerate(x):
