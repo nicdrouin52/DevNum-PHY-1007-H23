@@ -32,7 +32,7 @@ if __name__ == "__main__":
         Wire((40, 80), (60, 80), horizontal_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
         Wire((60, 80), (80, 80), horizontal_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
         Wire((80, 80), (80, 52), vertical_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        VoltageSource((80, 52), (80, 48), vertical_eqs, cartesian_variables, BATTERY_VOLTAGE),
+        VoltageSource((80, 48), (80,52), vertical_eqs, cartesian_variables, BATTERY_VOLTAGE),
 
         Wire((40, 80), (40, 55), vertical_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
         Wire((40, 55), (40, 45), vertical_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
@@ -44,7 +44,6 @@ if __name__ == "__main__":
     ]
     ground_position = (80, 48)
 
-# 0: (48, 80), 1: (80, 20), 2: (60, 20), 3: (40, 20), 4: (20, 20), 5: (20, 48), 6: (20, 80), 7: (40, 80), 8: (60, 80), 9: (80, 80), 10: (80, 52), 11:(40, 45), 12: (40, 45), 13:(40, 55), 14:(60, 45), 15:(60, 55)
 
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
@@ -54,4 +53,3 @@ if __name__ == "__main__":
     )
     world.compute()
     world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
-
