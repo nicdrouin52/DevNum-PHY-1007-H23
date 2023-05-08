@@ -70,7 +70,7 @@ class BiotSavartEquationSolver:
 
                         I = B[i[0]][i[1]]
 
-                        integrale += np.cross(I,r)/norme_r_cursif**2
+                        integrale += np.cross(I,r_cursif)/norme_r_cursif**2
 
                     B[indice_x][indice_y] = mu_0*integrale/(4*pi)
 
@@ -132,7 +132,7 @@ class BiotSavartEquationSolver:
                         r_cursif = np.subtract(r, r_prime)
                         norme_r_cursif = np.linalg.norm(r_cursif)
                         I = B[i[0]][i[1]]
-                        integrale += np.cross(I,r)/norme_r_cursif**2
+                        integrale += np.cross(I,r_cursif)/norme_r_cursif**2
                     B[indice_rayon][indice_theta] = mu_0*integrale/(4*pi)
 
 
