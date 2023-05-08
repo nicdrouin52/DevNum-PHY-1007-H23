@@ -146,16 +146,18 @@ class World:
         nb_relaxation_iterations : int
             Number of iterations performed to obtain the potential by the relaxation method (default = 1000)
         """
-        #calcul pot
+        # On calcule le potentiel grâce à la classe que nous avons préablement complétée
         self._potential = LaplaceEquationSolver(nb_relaxation_iterations).solve(self._circuit_voltage, self._coordinate_system, self.delta_q1, self.delta_q2)
+
+        # Ayant calculé le potentiel, trouver le champs électrique est trivial :
         self._electric_field = -self._potential.gradient()
-        #
+
+        # On calcule le champs magnétique grâce à la classe que nous avons préablement complétée
         self._magnetic_field = BiotSavartEquationSolver().solve(self._circuit_current, self._coordinate_system, self.delta_q1, self.delta_q2)
-        # déf du vecteur de Poynting
+
+        # De la définition du vecteur de Poynting, on a le flux d'énergie :
         self._energy_flux = self._electric_field.cross(self._magnetic_field) / mu_0
 
-        # return self._potential# Retourne le champ du potentiel dans exemple
-        # on doit rien retourner me semble ? 
 
     def show_circuit(self, nodes_position_in_figure: dict = None):
         """
