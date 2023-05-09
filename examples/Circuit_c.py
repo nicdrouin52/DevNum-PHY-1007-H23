@@ -13,19 +13,19 @@ if __name__ == "__main__":
     cartesian_variables = Symbol("x"), Symbol("y")
     x, y = cartesian_variables
 
-    x_expression_droite = np.real(30**2 - (y - 30)**2)**(1/2)
-    y_expression_droite = y
-    droite_eqs = (x_expression_droite, y_expression_droite)
+    x_expression = (625- (y-25)**2)**0.5 
+    y_expression = y
+    droite_eqs = (x_expression, y_expression)
 
-    x_expression_gauche = np.real(-(30**2 - (y - 30)**2)**(1/2))
+    x_expression_gauche = -(625- (y+25)**2)**0.5  
     y_expression_gauche = y
     gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
     wires = [
 #        VoltageSource((0, 0), (0, 20), gauche_eqs, cartesian_variables, BATTERY_VOLTAGE),
-        Wire((0, 0), (0, 60), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        Wire((50,25),(50,75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        Wire((50,75),(50,25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
 #        Wire((48, 80), (50, 80), gauche_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
-        Wire((0, 60), (0, 0), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
     ]
     ground_position = (0, 0)
 
