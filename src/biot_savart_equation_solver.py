@@ -62,7 +62,7 @@ class BiotSavartEquationSolver:
         # on itère sur toute la grille
         for indice_x, x in enumerate(B):
             for indice_y, y in enumerate(x):
-                # on exclut les points où circule un courant
+                # on exclut les points où ne circule pas de courant
                 if [indice_x, indice_y] not in Courant:
                     # on initialise le résultat de l'intégrale
                     # issu de la loi de Biot-Savart
