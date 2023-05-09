@@ -82,7 +82,7 @@ class LaplaceEquationSolver:
                         continue
 
                     # On relaxe le point
-                    P_copie[indice_x, indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y]) + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
+                    P_copie[indice_x][indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y]) + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
 
             # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
@@ -156,7 +156,7 @@ class LaplaceEquationSolver:
                         continue
 
                     # On relaxe le point
-                    P_copie[indice_r, indice_theta] = (2*r**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta]) + r*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta]) + 2*r**2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1])) / 4*(r**2*delta_theta + delta_r)
+                    P_copie[indice_r][indice_theta] = (2*r**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta]) + r*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta]) + 2*r**2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1])) / 4*(r**2*delta_theta + delta_r)
 
             # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
