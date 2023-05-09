@@ -21,19 +21,29 @@ if __name__ == "__main__":
     y_expression_gauche = y
     gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
+
+
+    x_expression_vertical = 0 * x
+    y_expression_vertical = y
+    vertical_eqs = (x_expression_vertical, y_expression_vertical)
+
+    x_expression_horizontal = x
+    y_expression_horizontal = 0 * y
+    horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
+
     wires = [
-#        VoltageSource((0, 0), (0, 20), gauche_eqs, cartesian_variables, BATTERY_VOLTAGE),
-        Wire((50,25),(50,75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        Wire((50,75),(50,25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-#        Wire((48, 80), (50, 80), gauche_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+        VoltageSource((48, 25), (52, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
+        Wire((52,25),(52,75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        Wire((52, 75), (48, 75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+        Wire((48,75),(48,25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
     ]
-    ground_position = (0, 0)
+    ground_position = (48, 25)
 
 
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
-        {0: (0, 0), 1:(0, 60)}
+        {0: (48, 25), 1:(52,25), 2: (52, 75), 3: (48,75)}
     )
     world.compute()
     world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
