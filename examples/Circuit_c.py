@@ -21,11 +21,27 @@ if __name__ == "__main__":
     y_expression_gauche = y
     gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
+    x_expression_horizontal = x
+    y_expression_horizontal = 0 * y
+    horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
+
     wires = [
-#        VoltageSource((0, 0), (0, 20), gauche_eqs, cartesian_variables, BATTERY_VOLTAGE),
-        Wire((50,25),(50,75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        Wire((50,75),(50,25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        Wire((0, 50),(0, 0), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((0, 0),(1, 0.0200089), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((1, 0.0200089),(2, 0.0801), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        VoltageSource((0, 0), (25, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
+#        VoltageSource((1, 0.0200089), (2, 0.0801), droite_eqs, cartesian_variables, BATTERY_VOLTAGE),
+        Wire((25, 25),(0,50), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE)
+#        Wire((0, 0),(2, 0.0801), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((1, 0.02),(2, 0.0801), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        VoltageSource((2, 0.0801), (0, 50), droite_eqs, cartesian_variables, BATTERY_VOLTAGE),
+#        Wire((0, 50),(0, 0), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((0, 50),(0, 0), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((-2, -0.0801),(0,50), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((0,50),(0,0), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
 #        Wire((48, 80), (50, 80), gauche_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+#        Wire((0, 50),(0, 0), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((2, 0.0801),(0,50), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE)
     ]
     ground_position = (0, 0)
 
@@ -33,7 +49,7 @@ if __name__ == "__main__":
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
-        {0: (0, 0), 1:(0, 60)}
+        {0: (0, 0), 1:(25, 25), 3:(0, 50)}
     )
     world.compute()
     world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
