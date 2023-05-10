@@ -2,9 +2,10 @@ import env_examples  # Modifies path, DO NOT REMOVE
 import numpy as np
 from sympy import Symbol
 from src import Circuit, CoordinateSystem, VoltageSource, Wire, World
+from celrcle import haut_de_cercle, bas_de_cercle, cercle_complet
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     WORLD_SHAPE = (101, 101)
     BATTERY_VOLTAGE = 1.0
     HIGH_WIRE_RESISTANCE = 1.0
@@ -22,7 +23,6 @@ if __name__ == "__main__":
     gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
 
-
     x_expression_vertical = 0 * x
     y_expression_vertical = y
     vertical_eqs = (x_expression_vertical, y_expression_vertical)
@@ -31,20 +31,50 @@ if __name__ == "__main__":
     y_expression_horizontal = 0 * y
     horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
 
-    wires = [
-        Wire((48,25),(48,75), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        Wire((48,75),(52,75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
-        Wire((52, 75),(52, 25), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        VoltageSource((52, 25), (48, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
-    ]
-    ground_position = (52, 25)
+
+
+    x_expr = x
+    y_expr = y
+    cerc_eqs = (x_expr, y_expr)
+
+
+    wires = []
+    
+    prec = 10
+
+    for i in range(prec):
+        wires.append(Wire( haut_de_cercle(prec, (35,70),(65,70))[i], haut_de_cercle(prec, (35,70),(65,70))[i+1], cerc_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE))
+
+    for i in range(prec):
+        wires.append(Wire(haut_de_cercle(prec, (65,70),(75,50))[i], haut_de_cercle(prec, (65,70),(75,50))[i+1], cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
+
+    for i in range(prec):
+        wires.append(Wire(bas_de_cercle(prec, (75,50),(65,30))[i], bas_de_cercle(prec, (75,50),(65,30))[i+1], cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
+
+    for i in range(prec):
+        wires.append(Wire(bas_de_cercle(prec, (65,30),(35,30))[i], bas_de_cercle(prec, (65,30),(35,30))[i+1], cerc_eqs, cartesian_variables, BATTERY_VOLTAGE))
+
+    for i in range(prec):
+        wires.append(Wire(bas_de_cercle(prec, (35,30),(25,50))[i], bas_de_cercle(prec, (35,30),(25,50))[i+1], cerc_eqs, cartesian_variables, BATTERY_VOLTAGE))
+
+    for i in range(prec):
+        wires.append(Wire(haut_de_cercle(prec, (25,50),(35,70))[i], haut_de_cercle(prec, (25,50),(35,70))[i+1], cerc_eqs, cartesian_variables, BATTERY_VOLTAGE))
+
+
+#    wires = [
+#        Wire((48,25),(48,75), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((48,75),(52,75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+#        Wire((52, 75),(52, 25), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        VoltageSource((52, 25), (48, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
+#    ]
+    ground_position = (25, 50)
 
 
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
-        {0: (48, 25), 1:(48,75), 2: (52, 75), 3: (52,25)}
+        cercle_complet(3*prec, (25,50))
     )
-    
+
     world.compute()
-    world.show_all()
+    world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
