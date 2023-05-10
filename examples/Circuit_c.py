@@ -47,4 +47,4 @@ if __name__ == "__main__":
     )
     
     world.compute()
-    world.show_potential() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
+    world.show_all()
