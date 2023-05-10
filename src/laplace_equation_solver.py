@@ -153,10 +153,10 @@ class LaplaceEquationSolver:
 
                     # on n'itère pas sur les points à potentiel constant
                     if (indice_r, indice_theta) in point_ct:
-                        continue
+                        continue 
 
                     # On relaxe le point
-                    P_copie[indice_r][indice_theta] = ((2*r**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta])) + (r*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta])) + (2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1]))) / (4*(indice_r**2*delta_theta + delta_r))
+                    P_copie[indice_r][indice_theta] = ((2*r[indice_theta]**2*delta_theta**2*(P[indice_r+1][indice_theta]+P[indice_r-1][indice_theta])) + (r[indice_theta]*delta_r*delta_theta**2*(P[indice_r+1][indice_theta]-P[indice_r-1][indice_theta])) + (2*delta_r**2*(P[indice_r][indice_theta+1]+P[indice_r][indice_theta-1]))) / (4*((r[indice_theta])**2*delta_theta**2 + delta_r**2))
 
             # si le résultat converge, on arrête le processus itératif
 #            ecart = np.max(np.abs(P_copie-P))
