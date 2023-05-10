@@ -40,4 +40,4 @@ if __name__ == "__main__":
         {0: (50, pi/4), 1:(50, 19*pi/45), 2:(70, 19*pi/45), 3: (70, 5*pi/18), 4: (70, 13*pi/60), 5: (70, 7*pi/90), 6: (50, 7*pi/90), 7: (50, 43*pi/180)}
     )
     world.compute()
-    world.show_potential()
+    world.show_all()
