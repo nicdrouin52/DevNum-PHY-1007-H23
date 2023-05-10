@@ -52,4 +52,4 @@ if __name__ == "__main__":
          8: (40, 80), 9: (60, 80), 10: (80, 80), 11: (80, 52), 12: (40, 55), 13: (40, 45), 14: (60, 55), 15: (60, 45)}
     )
     world.compute()
-    world.show_all() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
+    world.show_all()
