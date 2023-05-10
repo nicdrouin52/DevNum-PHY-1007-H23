@@ -5,7 +5,7 @@ from src import Circuit, CoordinateSystem, VoltageSource, Wire, World
 from celrcle import haut_de_cercle, bas_de_cercle, cercle_complet
 
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     WORLD_SHAPE = (101, 101)
     BATTERY_VOLTAGE = 1.0
     HIGH_WIRE_RESISTANCE = 1.0
