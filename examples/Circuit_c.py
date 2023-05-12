@@ -8,81 +8,47 @@ from celrcle import haut_de_cercle, bas_de_cercle, cercle_complet
 
 if __name__ == "__main__":
     WORLD_SHAPE = (101, 101)
-    prec = 30
-    BATTERY_VOLTAGE = 1.0/prec
-    HIGH_WIRE_RESISTANCE = 1.0/prec
-    LOW_WIRE_RESISTANCE = 0.01/prec
+    BATTERY_VOLTAGE = 1.0
+    HIGH_WIRE_RESISTANCE = 1.0
+    LOW_WIRE_RESISTANCE = 0.01
 
     cartesian_variables = Symbol("x"), Symbol("y")
     x, y = cartesian_variables
 
 
-    # Notre essaie pour paramétriser le cercle
-    # (ne fonctionne pas, nous ne sommes pas assez outillé pour réusssir, surtout que le cours de programmation n'est pas un prérecquis)
-#    x_expression = (625- (y+25)**2)**0.5 
-#    y_expression = y
-#    droite_eqs = (x_expression, y_expression)
+    # Paramétrisation de la partie droite du cercle
+    x_expression = (np.abs(625 - (y - 25)**2))**0.5
+    y_expression = y
+    droite_eqs = (x_expression, y_expression)
 
-#    x_expression_gauche = -(625- (y-25)**2)**0.5  
-#    y_expression_gauche = y
-#    gauche_eqs = (x_expression_gauche, y_expression_gauche)
+    # Paramétrisation de la partie gauche du cercle
+    x_expression_gauche = -(np.abs(625 - (y + 25)**2))**0.5
+    y_expression_gauche = y
+    gauche_eqs = (x_expression_gauche, y_expression_gauche)
 
+    # Pour les fils horizontaux (source, résistance)
+    x_expression_horizontal = x
+    y_expression_horizontal = y
+    horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
 
-#    x_expression_vertical = 0 * x
-#    y_expression_vertical = y
-#    vertical_eqs = (x_expression_vertical, y_expression_vertical)
+    wires = [
+        Wire((55, 25),(55, 75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        Wire((55, 75),(45, 75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+        Wire((45, 75),(45, 25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+        VoltageSource((45, 25), (55, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
 
-#    x_expression_horizontal = x
-#    y_expression_horizontal = 0 * y
-#    horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
+#        Wire((45, 25),(45, 75), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        Wire((45, 75),(55, 75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
+#        Wire((55, 75),(55, 25), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
+#        VoltageSource((45, 25), (55, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
+    ]
 
-#    wires = [
-#        Wire((48,25),(48,75), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-#        Wire((48,75),(52,75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
-#        Wire((52, 75),(52, 25), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-#        VoltageSource((52, 25), (48, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
-#    ]
-
-
-    x_expr = x
-    y_expr = y
-    cerc_eqs = (x_expr, y_expr)
-
-    # Liste vide pour les fils
-    wires = []
-
-
-    for i in range(prec):
-        wires.append(Wire(haut_de_cercle(prec, (35,70),(65,70))[i], haut_de_cercle(prec, (35,70),(65,70))[i+1],
-                          cerc_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE))
-
-    for i in range(prec):
-        wires.append(Wire(haut_de_cercle(prec, (65,70),(75,50))[i], haut_de_cercle(prec, (65,70),(75,50))[i+1],
-                          cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
-
-    for i in range(prec):
-        wires.append(Wire(bas_de_cercle(prec, (75,50),(65,30))[i], bas_de_cercle(prec, (75,50),(65,30))[i+1],
-                          cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
-
-    for i in range(prec):
-        wires.append(VoltageSource(bas_de_cercle(prec, (65,30),(35,30))[i], bas_de_cercle(prec, (65,30),(35,30))[i+1],
-                          cerc_eqs, cartesian_variables, BATTERY_VOLTAGE))
-
-    for i in range(prec):
-        wires.append(Wire(bas_de_cercle(prec, (35,30),(25,50))[i], bas_de_cercle(prec, (35,30),(25,50))[i+1],
-                          cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
-
-    for i in range(prec):
-        wires.append(Wire(haut_de_cercle(prec, (25,50),(35,70))[i], haut_de_cercle(prec, (25,50),(35,70))[i+1],
-                          cerc_eqs, cartesian_variables, LOW_WIRE_RESISTANCE))
-
-
-    ground_position = (25, 50)
+#    ground_position = (45, 25)
+    ground_position = (55, 25)
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
-        cercle_complet(3*prec, (25,50))
+        {0: (45, 25), 1: (45, 75), 2: (55, 75), 3: (55, 25)}
     )
-
     world.compute()
     world.show_all()
