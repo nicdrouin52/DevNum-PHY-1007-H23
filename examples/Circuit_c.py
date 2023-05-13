@@ -35,16 +35,10 @@ if __name__ == "__main__":
         Wire((55, 25),(55, 75), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
         Wire((55, 75),(45, 75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
         Wire((45, 75),(45, 25), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-        VoltageSource((45, 25), (55, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
-
-#        Wire((45, 25),(45, 75), gauche_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-#        Wire((45, 75),(55, 75), horizontal_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
-#        Wire((55, 75),(55, 25), droite_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
-#        VoltageSource((45, 25), (55, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE),
+        VoltageSource((45, 25), (55, 25), horizontal_eqs, cartesian_variables, BATTERY_VOLTAGE)
     ]
 
-#    ground_position = (45, 25)
-    ground_position = (55, 25)
+    ground_position = (45, 25)
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
     world.show_circuit(
