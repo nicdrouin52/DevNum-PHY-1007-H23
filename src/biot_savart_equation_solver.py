@@ -38,71 +38,27 @@ class BiotSavartEquationSolver:
             B_z(x, y) are the 3 components of the magnetic vector at a given point (x, y) in space. Note that
             B_x = B_y = 0 is always True in our 2D world.
         """
-        # Si le champs du courant est en 2D on le transforme en
-        # un champs 3D à coordonnées I_z = 0
-#        if electric_current.shape[2] == 2:
-#            B = np.zeros(shape=(electric_current.shape[0], electric_current.shape[1], 3))
-#            B[:,:, :2] = electric_current
-#            B = VectorField(B)
-#        else:
-#            B = electric_current.copy()
-
-        # on crée une liste vide pour les points où circule un courant
-#        Courant = []
-        # on ajoute tous les points où circule un courant
-#        for indice_x, x in enumerate(electric_current):
-#            for indice_y, y in enumerate(x):
-#                if len(y) == 3:
-#                    if y[0] or y[1] or y[2] != 0:
-#                        Courant.append([indice_x, indice_y])
-#                else:
-#                    if y[0] or y[1] != 0:
-#                        Courant.append([indice_x, indice_y])
-
-        # on itère sur toute la grille
-#        for indice_x, x in enumerate(B):
-#            for indice_y, y in enumerate(x):
-                # on exclut les points où ne circule pas de courant
-#                if [indice_x, indice_y] not in Courant:
-                    # on initialise le résultat de l'intégrale
-                    # issu de la loi de Biot-Savart
-#                    integrale = [0,0,0]
-                    # on somme la contribution au champs de chaque 
-                    # petit bout de fil où circule un courant
-#                   for i in Courant:
-                        # vecteur de l'origine -> point où le champs est calculé
-#                        r = [indice_x*delta_x, indice_y*delta_y]
-                        # vecteur de l'origine -> élément de fil
- #                       r_prime = [i[0]*delta_x, i[1]*delta_y]
-                        # vecteur de l'élément de fil -> point où le champs est calculé
- #                       r_cursif = np.subtract(r, r_prime)
-                        
-                        # norme de r cursif
-#                        norme_r_cursif = np.linalg.norm(r_cursif)
-
-                        # courant à du au bout de fil
-#                        I = B[i[0]][i[1]]
-
-                        # on ajoute la contribution de ce petit bout de fil à notre intégrale
-#                        integrale += np.cross(I,r_cursif)/norme_r_cursif**2
-
-                    # de la loi de Biot-Savart :
-#                    B[indice_x][indice_y] = mu_0*integrale/(4*pi)
-
-#        return B
-    
+        # Trouve les coordonnées des points pour lesquels il y a un courant électrique non-nul
         Coordonné_circuit = np.array([(x, y) for x, row in enumerate(electric_current) for y, val in enumerate(row) if val.any()])
 
+        # Initialise le champ magnétique à 0
         champ_B = np.zeros((electric_current.shape[0], electric_current.shape[1], 3))
         for i in range(electric_current.shape[0]):
             for j in range(electric_current.shape[1]):
+                # Calcul le vecteur r qui relie les points pour calculer le champ magntique pour tous les points 
                 r = np.stack((Coordonné_circuit[:, 0] - i, Coordonné_circuit[:, 1] - j, np.zeros(len(Coordonné_circuit[:, 0]))), axis=-1)
 
+                # Calcul de la norme du vecteur r
                 module_r = np.sqrt((r ** 2).sum(axis=-1))
 
+                # Calcul du produit vectoriel entre le vecteur r et le vecteur du courant électrique divisé par la norme du vecteur r
                 B = np.cross(r, electric_current[Coordonné_circuit[:, 0], Coordonné_circuit[:, 1]])[:, 2] / (module_r ** 3)
+
+                # Somme du champ de chacun des points pour lesquels il y a un courant électrique
                 champ_B[i, j][2] = np.sum(B, axis=0)
-    
+
+        # Retour du calcul final du champ magnétique après avoir changé les valeurs non valides
+        # par 0. 
         return VectorField(np.nan_to_num(mu_0 * champ_B / (4 * np.pi), nan=0))
 
     def _solve_in_polar_coordinate(
@@ -132,70 +88,27 @@ class BiotSavartEquationSolver:
             B_z(r, θ) are the 3 components of the magnetic vector at a given point (r, θ) in space. Note that
             B_r = B_θ = 0 is always True in our 2D world.
         """
-        # Si le champs du courant est en 2D on le transforme en
-        # un champs 3D à coordonnées I_z = 0
-#        if electric_current.shape[2] == 2:
-#            B = np.zeros(shape=(electric_current.shape[0], electric_current.shape[1], 3))
-#            B[:,:, :2] = electric_current
-#            B = VectorField(B)
-#        else:
-#            B = electric_current.copy()
-        # juste un copier/coller de cartesien...
-
-        # on crée une liste vide pour les points où circule un courant
-#        Courant = []
-        # on ajoute tous les points où circule un courant
-#        for indice_rayon, rayon in enumerate(electric_current):
-#            for indice_theta, theta in enumerate(rayon):
-#                if len(theta) == 3:
-#                    if theta[0] or theta[1] or theta[2] != 0:
-#                        Courant.append([indice_rayon, indice_theta])
-#                else:
-#                    if theta[0] or theta[1] != 0:
-#                        Courant.append([indice_rayon, indice_theta])
-
-        # on itère sur toute la grille
-#        for indice_rayon, rayon in enumerate(B):
-#            for indice_theta, theta in enumerate(rayon):
-                # on exclut les points où circule un courant
-#                if [indice_rayon, indice_theta] not in Courant:
-                    # on initialise le résultat de l'intégrale
-                    # issu de la loi de Biot-Savart
-#                    integrale = [0,0,0]
-                    # on somme la contribution au champs de chaque 
-                    # petit bout de fil où circule un courant
-#                    for i in Courant:
-                        # vecteur de l'origine -> point où le champs est calculé
-#                        r = [indice_rayon*delta_r, indice_theta*delta_theta]
-                        # vecteur de l'origine -> élément de fil
-#                        r_prime = [i[0]*delta_r, i[1]*delta_theta]
-                        # vecteur de l'élément de fil -> point où le champs est calculé
-#                        r_cursif = np.subtract(r, r_prime)
-
-                        # norme de r cursif
-#                        norme_r_cursif = np.linalg.norm(r_cursif)
-                        # courant à du au bout de fil
-#                        I = B[i[0]][i[1]]
-                        # on ajoute la contribution de ce petit bout de fil à notre intégrale
-#                        integrale += np.cross(I,r_cursif)/norme_r_cursif**2
-                    
-                    # de la loi de Biot-Savart :
-#                    B[indice_rayon][indice_theta] = mu_0*integrale/(4*pi)
-
-
-#        return B
+        # Trouve les coordonnées des points pour lesquels il y a un courant électrique non-nul
         Coordonné_circuit = np.array([(r, theta) for r, row in enumerate(electric_current) for theta, val in enumerate(row) if val.any()])
 
+        # Initialise le champ magnétique à 0
         champ_B = np.zeros((electric_current.shape[0], electric_current.shape[1], 3))
         for i in range(electric_current.shape[0]):
             for j in range(electric_current.shape[1]):
+
+                # Calcul le vecteur r qui relie les points pour calculer le champ magntique pour tous les points
                 r = np.stack((Coordonné_circuit[:, 0] - i, Coordonné_circuit[:, 1] - j, np.zeros(len(Coordonné_circuit[:, 0]))), axis=-1)
 
+                # Calcul de la norme du vecteur r
                 module_r = np.sqrt((r ** 2).sum(axis=-1))
 
+                # Calcul du produit vectoriel entre le vecteur r et le vecteur du courant électrique divisé par la norme du vecteur r
                 B = np.cross(r, electric_current[Coordonné_circuit[:, 0], Coordonné_circuit[:, 1]])[:, 2] / (module_r ** 3)
+                # Somme du champ de chacun des points pour lesquels il y a un courant électrique
                 champ_B[i, j][2] = np.sum(B, axis=0)
-    
+
+        # Retour du calcul final du champ magnétique après avoir changé les valeurs non valides
+        # par 0. 
         return VectorField(np.nan_to_num(mu_0 * champ_B / (4 * np.pi), nan=0))
 
 

@@ -48,8 +48,8 @@ class LaplaceEquationSolver:
             always gives V(x, y) = 0 if (x, y) is not a point belonging to an electrical component of the circuit.
         """
         # On a déjà la matrice des sources de potentiel, on la nomme P
-        # P = np.array([(x, y) for x, row in enumerate(constant_voltage) for y, val in enumerate(row) if val.any()])
         P = constant_voltage.copy()
+
         # Copie de la première matrice, servira pour les itérations
         P_copie = constant_voltage.copy()
         
@@ -71,6 +71,7 @@ class LaplaceEquationSolver:
         for iteration in range(self.nb_iterations):
             N += 1
             for indice_x, i in enumerate(P):
+
                 # on n'itère que sur les points à l'intérieur 
                 # de la grille, pas sur les limites
                 if indice_x == 0 or indice_x == P.shape[0]-1:
@@ -84,8 +85,8 @@ class LaplaceEquationSolver:
                         continue
 
                     # On relaxe les points
-                    # a = np.stack()
-                    P_copie[indice_x][indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y]) + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
+                    P_copie[indice_x][indice_y] = (delta_y**2*(P[indice_x+1][indice_y] + P[indice_x-1][indice_y])
+                    + delta_x**2*(P[indice_x][indice_y+1] + P[indice_x][indice_y-1])) / (2*(delta_x**2 + delta_y**2))
 
             # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
@@ -149,6 +150,7 @@ class LaplaceEquationSolver:
         for iteration in range(self.nb_iterations):
             N += 1
             for indice_r, r in enumerate(P):
+
                 # on n'itère que sur les points à l'intérieur 
                 # de la grille, pas sur les limites
                 if indice_r == 0 or indice_r == P.shape[0]-1:
@@ -157,7 +159,7 @@ class LaplaceEquationSolver:
                     if indice_theta == 0 or indice_theta == P.shape[1]-1:
                         continue
 
-                    # on n'itère pas sur les points à potentiel constant
+                    # On n'itère pas sur les points à potentiel constant
                     if (indice_r, indice_theta) in point_ct:
                         continue 
 
@@ -166,7 +168,7 @@ class LaplaceEquationSolver:
             
             # si le résultat converge, on arrête le processus itératif
             ecart = np.max(np.abs(P_copie-P))
-            if type(np.max(P_copie)) == None or np.max(np.abs(P_copie-P)) < 10**(-5): # Comparaison avec erreur
+            if ecart < 10**(-5): # Comparaison avec erreur
                 print(f'iter # {N}')
                 break 
             else:

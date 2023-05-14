@@ -12,14 +12,17 @@ if __name__ == "__main__":
     cartesian_variables = Symbol("x"), Symbol("y")
     x, y = cartesian_variables
 
+    # Équations qui permettent de faire des fils verticaux
     x_expression_vertical = 0 * x
     y_expression_vertical = y
     vertical_eqs = (x_expression_vertical, y_expression_vertical)
 
+    # Équations qui permettent de faire des fils horizontaux
     x_expression_horizontal = x
     y_expression_horizontal = 0 * y
     horizontal_eqs = (x_expression_horizontal, y_expression_horizontal)
 
+    # Série de fils qui consruisent le circuit
     wires = [
         Wire((80, 48), (80, 20), vertical_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
         Wire((80, 20), (60, 20), horizontal_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
@@ -42,11 +45,15 @@ if __name__ == "__main__":
         Wire((60, 55), (60, 45), vertical_eqs, cartesian_variables, HIGH_WIRE_RESISTANCE),
         Wire((60, 45), (60, 20), vertical_eqs, cartesian_variables, LOW_WIRE_RESISTANCE),
     ]
+
+    # Position de la mise en terre
     ground_position = (80, 48)
 
 
     circuit = Circuit(wires, ground_position)
     world = World(circuit=circuit, coordinate_system=CoordinateSystem.CARTESIAN, shape=WORLD_SHAPE)
+
+    # Positionnement des noeuds 
     world.show_circuit(
         {0: (80, 48), 1:(80, 20), 2:(60, 20), 3: (40, 20), 4: (20, 20), 5: (20, 48), 6: (20, 52), 7: (20, 80),
          8: (40, 80), 9: (60, 80), 10: (80, 80), 11: (80, 52), 12: (40, 55), 13: (40, 45), 14: (60, 55), 15: (60, 45)}
