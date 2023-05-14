@@ -41,4 +41,4 @@ if __name__ == "__main__":
     )
     world.show_circuit_voltage()
     world.compute()
-    world.show_all() # à la fin, on va avoir show_all. Je l'ai remplacé temporairement
+    world.show_all() 
